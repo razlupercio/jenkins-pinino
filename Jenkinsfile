@@ -8,7 +8,7 @@ pipeline{
     parameters {
         choice(
             name: 'TEAM',
-            choices: getTeam(),
+            choices: getTeams(),
             description: 'Select the team'
             )
     }
