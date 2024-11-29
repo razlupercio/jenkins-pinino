@@ -1,17 +1,35 @@
 pipeline{
     agent any
+
+    environment{
+        PYTHON_SCRIPT_PATH = 'fetch_teams.py'
+    }
+
     parameters {
         choice(
-            name: 'Env',
-            choices: 'dev\nqa\nuat\nprod',
-            description: 'passing the env'
+            name: 'TEAM',
+            choices: getTeam(),
+            description: 'Select the team'
             )
     }
+
     stages {
-        stage('Environment'){
+        stage('Fetch Teams'){
             steps {
-                echo "The env is ${params.Env}"
+                script {
+                    echo "Selected Team: ${params.TEAM}"
+                }
             }
         }
+    }
+}
+
+// function to fetch teams 
+
+def getTeams() {
+    node {
+        def teamsJson = sh(script: "python3 ${env.PYTHON_SCRIPT_PATH}", returnStdout: true).trim()
+        def teams = readJSON(text: teamsJson)
+        return teams
     }
 }
